@@ -1,3 +1,12 @@
+body {
+    background: linear-gradient(#0e0e0e, #393939)
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
 .container {
     background: #010032;
     display: flex;
@@ -8,21 +17,21 @@
 }
 
 .box {
-    width: 100vw;
-    height: 100vh;
+    width: 50vw;
+    height: 50vh;
     border: 1px dashed #6f6f6f;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 .radius {
-    width: 70%;
-    height: 50%;
+    width: 100%;
+    height: 100%;
     background: linear-gradient(30deg, #5b0048 40% , #020080 100%);
 }
 input {
     position: absolute;
-    width: 100px;
+    width: 5vw;
     height: 5px;
     transform: translate(-50%, -50%);
 }
@@ -73,7 +82,7 @@ label[for="right-top-horisontal"] {
 }
 
 label[for="right-bottom-vertical"] {
-    top: 62%;
+    bottom: 24%;
     left: 77%;
 }
 label[for="right-bottom-horisontal"] {
@@ -99,7 +108,7 @@ label[for="left-top-horisontal"] {
     left: 25%;
 }
 .borderRadius__wrapper {
-    min-width: 20vw;
+    min-width: 30vw;
     height: 30px;
     background: linear-gradient( #c3afaf,  #504646);
     position: absolute;
@@ -111,12 +120,14 @@ label[for="left-top-horisontal"] {
     justify-content: space-between;
     align-items: center;
     padding: 5px 5px;
-    /* border-radius: 43% 0% / 100% 0%; */
+    /* vertical-align: center; */
     
 }
 .borderRadius__value {
     font-size: 18px;
     height: 100%;
+    vertical-align: middle;
+    margin: 0;
 }
 .copy {
     color: white;
@@ -127,4 +138,50 @@ label[for="left-top-horisontal"] {
     justify-content: center;
     align-items: center;
     font-size: 14px;
+    padding: 5px;
+}
+
+@media (max-width: 1200px) {
+    .borderRadius__value, label, .copy  {
+        font-size: 12px;
+    }
+    input {
+        width: 10vw;
+    }
+    label[for="right-top-vertical"] {
+        top: 25%;
+    }
+    label[for="right-top-horisontal"] {
+        top: 15%;
+    }
+    
+    label[for="right-bottom-vertical"] {
+        bottom: 26%;
+    }
+    label[for="right-bottom-horisontal"] {
+        bottom: 16%;
+    }
+    
+    label[for="bottom-left-horisontal"] {
+        bottom: 16%;
+    }
+    label[for="bottom-left-vertical"] {
+        bottom: 26%;
+    }
+    
+    label[for="left-top-vertical"] {
+        top: 25%;
+    }
+    label[for="left-top-horisontal"] {
+        top: 15%;
+    }
+}
+@media (max-width: 767px) {
+
+    input {
+        width: 15vw;
+    }
+    .borderRadius__wrapper {
+        width: 60vw;
+    }
 }
