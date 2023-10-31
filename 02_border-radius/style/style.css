@@ -1,0 +1,130 @@
+.container {
+    background: #010032;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+.box {
+    width: 100vw;
+    height: 100vh;
+    border: 1px dashed #6f6f6f;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.radius {
+    width: 70%;
+    height: 50%;
+    background: linear-gradient(30deg, #5b0048 40% , #020080 100%);
+}
+input {
+    position: absolute;
+    width: 100px;
+    height: 5px;
+    transform: translate(-50%, -50%);
+}
+#right-top-horisontal {
+    top: 20%;
+    left: 72%
+}
+#right-top-vertical {
+    top: 30%;
+    left: 80%
+}
+#right-bottom-vertical {
+    top: 70%;
+    left: 80%
+}
+#right-bottom-horisontal {
+    top: 80%;
+    left: 72%
+}
+#bottom-left-horisontal {
+    bottom: 20%;
+    left: 28%
+}
+#bottom-left-vertical {
+    bottom: 29%;
+    left: 20%
+}
+#left-top-vertical {
+    top: 30%;
+    left: 20%
+}
+#left-top-horisontal {
+    top: 20%;
+    left: 28%
+}
+label {
+    position: absolute;
+    color: white;
+    font-size: 16px;
+}
+label[for="right-top-vertical"] {
+    top: 22%;
+    left: 77%;
+}
+label[for="right-top-horisontal"] {
+    top: 13%;
+    left: 69%;
+}
+
+label[for="right-bottom-vertical"] {
+    top: 62%;
+    left: 77%;
+}
+label[for="right-bottom-horisontal"] {
+    bottom: 14%;
+    left: 69%;
+}
+
+label[for="bottom-left-horisontal"] {
+    bottom: 14%;
+    left: 25%;
+}
+label[for="bottom-left-vertical"] {
+    bottom: 24%;
+    left: 17%;
+}
+
+label[for="left-top-vertical"] {
+    top: 22%;
+    left: 17%;
+}
+label[for="left-top-horisontal"] {
+    top: 13%;
+    left: 25%;
+}
+.borderRadius__wrapper {
+    min-width: 20vw;
+    height: 30px;
+    background: linear-gradient( #c3afaf,  #504646);
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 5px;
+    /* border-radius: 43% 0% / 100% 0%; */
+    
+}
+.borderRadius__value {
+    font-size: 18px;
+    height: 100%;
+}
+.copy {
+    color: white;
+    min-width: 10%;
+    height: 100%;
+    background: linear-gradient( rgba(66, 66, 66, 0.4), #888787);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+}
