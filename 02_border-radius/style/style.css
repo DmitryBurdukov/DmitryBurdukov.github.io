@@ -1,5 +1,5 @@
 body {
-    background: linear-gradient(#0e0e0e, #393939)
+
 }
 
 * {
@@ -8,11 +8,11 @@ body {
 }
 
 .container {
-    background: #010032;
+    background: linear-gradient(#0e0e0e, #222222);
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
 }
 
@@ -148,32 +148,64 @@ label[for="left-top-horisontal"] {
     input {
         width: 10vw;
     }
+    #right-top-horisontal {
+        left: 78%
+    }
+    #right-top-vertical {
+        left: 85%
+    }
+    #right-bottom-vertical {
+        left: 85%
+    }
+    #right-bottom-horisontal {
+        left: 78%
+    }
+    #bottom-left-horisontal {
+        left: 22%
+    }
+    #bottom-left-vertical {
+        left: 15%
+    }
+    #left-top-vertical {
+        left: 15%
+    }
+    #left-top-horisontal {
+        left: 22%
+    }
     label[for="right-top-vertical"] {
         top: 25%;
+        left: 80%;
     }
     label[for="right-top-horisontal"] {
         top: 15%;
+        left: 73%;
     }
     
     label[for="right-bottom-vertical"] {
-        bottom: 26%;
+        bottom: 25%;
+        left: 80%;
     }
     label[for="right-bottom-horisontal"] {
-        bottom: 16%;
+        bottom: 15%;
+        left: 73%;
     }
     
     label[for="bottom-left-horisontal"] {
-        bottom: 16%;
+        bottom: 15%;
+        left: 24%;
     }
     label[for="bottom-left-vertical"] {
-        bottom: 26%;
+        bottom: 25%;
+        left: 17%;
     }
     
     label[for="left-top-vertical"] {
         top: 25%;
+        left: 17%;
     }
     label[for="left-top-horisontal"] {
         top: 15%;
+        left: 24%;
     }
 }
 @media (max-width: 767px) {
