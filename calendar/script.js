@@ -5,7 +5,9 @@ const currentDate = document.querySelector('.calendar__date'),
       prevBtn = document.querySelector('.calendar__btn_prev'),
       nextBtn = document.querySelector('.calendar__btn_next'),
       wrapper = document.querySelector('.wrapper'),
-      calendar = document.querySelector('.calendar');
+      calendar = document.querySelector('.calendar'),
+      menu = document.querySelector('.menu'),
+      menuInfo = menu.querySelector('.menu__info');
 
     //   inputBox = document.querySelector('.input');
 const month = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
@@ -27,6 +29,9 @@ function createDayBox(parent, date, empty = false, year, month, isEmpty) { //С�
     const dayBox = document.createElement('div');
     let insideBox;
     dayBox.classList.add('calendar__day');
+    if (isEmpty) {
+        dayBox.classList.add('calendar__day_empty');
+    }
     if (setActive(`${year}-${validateDigit(month)}-${validateDigit(date)}`, messages) && !isEmpty) {
         dayBox.classList.add('calendar__day_inside');
 
@@ -34,8 +39,8 @@ function createDayBox(parent, date, empty = false, year, month, isEmpty) { //С�
         insideBox.classList.add('calendar__day_passive');
         insideBox.textContent = messages[`${year}-${validateDigit(month)}-${validateDigit(date)}`];
         
-        dayBox.addEventListener('mouseover', (e) =>  mouseOver(insideBox, 'calendar__day_hovered', 'calendar__day_passive'));
-        dayBox.addEventListener('mouseleave', (e) =>  mouseOver(insideBox, 'calendar__day_passive', 'calendar__day_hovered'));
+        dayBox.addEventListener('mouseover', (e) =>  mouseOver(insideBox, 'calendar__day_hovered', 'calendar__day_passive', date));
+        dayBox.addEventListener('mouseleave', (e) =>  mouseOver(insideBox, 'calendar__day_passive', 'calendar__day_hovered', date));
 
     }
     if (now.getFullYear() === year && now.getMonth() + 1 === validateDigit(month) && validateDigit(now.getDate()) === validateDigit(date)) {
@@ -49,7 +54,7 @@ function createDayBox(parent, date, empty = false, year, month, isEmpty) { //С�
 
     if (dayBox.classList.contains('calendar__day_inside')) {
         dayBox.append(insideBox);
-        console.log(insideBox)
+        // console.log(insideBox)
     }
 
 }
@@ -76,7 +81,7 @@ function createMonth(wrapper, daysInMonth, startDay, m, clearIntervalFlag) {//С
             clearInterval(interval)
         }
     }, 5)
-    console.log(currentShowMonth, month[m], m)
+    // console.log(currentShowMonth, month[m], m)
 }
 
 function getFirstDayOfMonth(date) {//находим день недели первого числа заданного месяца, необходимо для формирования пустых ячеек
@@ -151,15 +156,41 @@ nextBtn.addEventListener('click', (e) => {//переключение на сле
 
 function setActive(checkDate, currDate) {//помечаем не пустые дни, в которых уже есть напоминание
     if(checkDate in currDate) {
-        console.log(checkDate, currDate)
+        // console.log(checkDate, currDate)
         return true
     } 
     return false
 }
 
-function mouseOver(element, hoveredClass, removedClass) {//добавлено всплывающее окно с записанной информацией при наведении на элемент
+function mouseOver(element, hoveredClass, removedClass, day, toDelete) {//добавлено всплывающее окно с записанной информацией при наведении на элемент
+    const escape = document.createElement('div');
+    const del = document.createElement('div');
+    if (!element.querySelector('.close')) {
+        escape.classList.add('close');
+        element.append(escape);
+    }
+    if (!element.querySelector('.del')) {
+        del.classList.add('del');
+        element.append(del);
+    }
     element.classList.add(hoveredClass);
-    element.classList.remove(removedClass)
+    element.classList.remove(removedClass);
+
+    escape.addEventListener('click', () => {
+
+        element.classList.add(removedClass);
+        element.classList.remove(hoveredClass);
+
+    })
+    del.addEventListener('click', () => {
+        if ( messages[`${validateDigit(currentShowYear)}-${(currentShowMonth)}-${validateDigit(parseInt(day))}`] ) {
+            delete messages[`${validateDigit(currentShowYear)}-${(currentShowMonth)}-${validateDigit(parseInt(day))}`] ;
+            element.closest('.calendar__day').classList.remove('calendar__day_inside');
+            element.remove();
+            saveRemindersToLocalStorage(messages);
+        }
+        console.log(validateDigit(currentShowYear), validateDigit(currentShowMonth), validateDigit(parseInt(day)))
+    })
 }
 
 function mouseLeave(parent, deletedClass) {//убирает всплывающее окно
@@ -168,46 +199,61 @@ function mouseLeave(parent, deletedClass) {//убирает всплывающе
 
 monthWrapper.addEventListener('click', (e) => {//открывает поле ввода напоминалки при нажатии на конкретный день
     let inputBox;
-    if (e.target.classList.contains('calendar__day')) {
+
+    if (e.target.classList.contains('calendar__day') && !e.target.classList.contains('calendar__day_empty')) {
         inputBox = document.createElement('div');
         inputBox.innerHTML = `<div class="input">
                                   <div class="close"></div>
+                                  
                                   <textarea class="input__text" name="text" id="text" cols="30" rows="10"></textarea>
                                   <button class="input__btn">Сохранить изменения</button>
                               </div>`;
         wrapper.append(inputBox);
-        console.log(inputBox)
+        // console.log(inputBox)wwwwwwwwwwwwwwwwwww
         inputBox.querySelector('.input__btn')
-                .addEventListener('click', (eInput) => addNewReminder(inputBox, messages, `${currentShowYear}-${currentShowMonth}-${validateDigit(e.target.textContent)}`, e));
+                .addEventListener('click', (eInput) => {addNewReminder(inputBox, messages, `${currentShowYear}-${currentShowMonth}-${validateDigit(e.target.textContent)}`, e);
+                //  console.log(messages);
+                //  console.log(JSON.parse(localStorage.getItem('calendarReminders')))
+                   });
+        if (inputBox) {
+            inputBox.addEventListener('click', (e) => {//закрывает поле ввода
+                if (e.target.classList.contains('close')) { 
+                    inputBox.remove();
+                }
+            });
+            document.addEventListener('keydown', (e) => {
+                if ( e.code === 'Escape' ) {
+                    inputBox.remove();
+                }
+            })
+        }
+    }
 
-    }
-    if (inputBox) {
-        inputBox.addEventListener('click', (e) => {//закрывает поле ввода
-            if (e.target.classList.contains('close')) {
-                inputBox.remove();
-            }
-        })
-    }
 
 })
 
-
-
-
 function addNewReminder(box, saveTo, date, e) {
     const wrpr = box.querySelector('textarea');
-    saveTo[date] = wrpr.value;
-    e.target.classList.add('calendar__day_inside');
+    messages[date] = " " + wrpr.value;
+    if (wrpr.value) {
+        e.target.classList.add('calendar__day_inside');
 
-    const insideBox = document.createElement('div');
-    insideBox.classList.add('calendar__day_passive');
-    console.log(`${validateDigit(date)}`)
-    insideBox.textContent = messages[`${date}`];
-    e.target.addEventListener('mouseover', (e) =>  mouseOver(insideBox, 'calendar__day_hovered', 'calendar__day_passive'));
-    e.target.addEventListener('mouseleave', (e) =>  mouseOver(insideBox, 'calendar__day_passive', 'calendar__day_hovered'));
-    e.target.append(insideBox);
-    box.remove();
-    saveRemindersToLocalStorage(messages)
+        const insideBox = document.createElement('div');
+        insideBox.classList.add('calendar__day_passive');
+        // console.log(`${validateDigit(date)}`)
+        insideBox.textContent = messages[`${date}`];
+    
+        e.target.append(insideBox);
+        saveRemindersToLocalStorage(messages);
+        e.target.addEventListener('mouseover', (e) =>  {
+            mouseOver(insideBox, 'calendar__day_hovered', 'calendar__day_passive', e.target.textContent);
+        });
+        e.target.addEventListener('mouseleave', (e) =>  mouseOver(insideBox, 'calendar__day_passive', 'calendar__day_hovered', e.target.textContent));
+        box.remove();
+    }
+    // console.log(saveTo[date])
+
+    // mouseOver(element, hoveredClass, removedClass, day, toDelete)
 }
 
 function changeBackground(selector, currentMonth) {
@@ -231,3 +277,116 @@ function changeBackground(selector, currentMonth) {
 function saveRemindersToLocalStorage(obj) {
     localStorage.setItem('calendarReminders', JSON.stringify(obj));
 }
+
+class CreateElement {
+    constructor(tagName, className, name, parent) {
+        this.name = name;
+        this.name = document.createElement(tagName);
+        this.name.classList.add(...className);
+        parent.append(this.name);
+    }
+}
+const modalWindow = new CreateElement('div', ['modal', 'hidden'], 'modalWindow', calendar);//, 'hidden'
+const modalClose = new CreateElement('div', ['modal__close'], 'modalClose', modalWindow.name);
+const over = new CreateElement('div', ['over', 'hidden'], 'over', calendar);
+const modalWrapper = new CreateElement('ul', ['modal__wrapper'], 'modalWrapper', modalWindow.name);
+
+
+
+// const fullInfoStorage = JSON.parse(localStorage.getItem('calendarReminders'))
+// // console.log(fullInfoStorage);
+// const fullInfoArray = Object.keys(fullInfoStorage)
+// fullInfoArray.forEach(item => {
+//     const modalItem = new CreateElement('li', 'modal__item', 'modalItem', modalWrapper.name);
+//     console.log(fullInfoStorage[item]);
+//     modalItem.name.textContent = 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nulla nesciunt dolor aut iste sed fugit impedit quasi veniam. Id cum omnis dolores! Quaerat vitae, voluptatem temporibus itaque ipsam odio ut!';
+//     modalItem.name.textContent = `${item}:${fullInfoStorage[item]}`;
+// });
+
+
+
+
+
+modalWindow.name.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal__close')) {
+        console.log(e.target);
+        modalWindow.name.classList.toggle('hidden');
+        modalWindow.name.classList.toggle('visible');
+        if (over.name.classList.contains('visible')) {
+            over.name.classList.remove('visible');
+            over.name.classList.add('hidden');
+        }
+    }
+})
+
+menu.addEventListener('click', (e) => {
+    if (!e.target.classList.contains('info__item')) {
+        menuInfo.classList.toggle('menu__info_active');
+    }
+    if (e.target.classList.contains('info__item') && e.target.classList.contains('info__item_all')) {
+        const fullInfoStorage = JSON.parse(localStorage.getItem('calendarReminders'))
+        // console.log(fullInfoStorage);
+        const fullInfoArray = Object.keys(fullInfoStorage);
+        modalWrapper.name.innerHTML = '';
+        fullInfoArray.forEach(item => {
+
+            const modalItem = new CreateElement('li', ['modal__item'], 'modalItem', modalWrapper.name);
+            modalItem.name.textContent = `${item}:${fullInfoStorage[item]}`;
+            console.log(fullInfoStorage[item]);
+
+        });
+        over.name.classList.remove('hidden');
+        over.name.classList.add('visible');
+        modalWindow.name.classList.remove('hidden');
+        modalWindow.name.classList.add('visible');
+    }
+});
+
+calendar.addEventListener('click', (e) => {
+    const target = e.target;
+    if ( target.classList !== 'info__item_all' && target !== menu && !target.classList.contains('menu__dot') && !target.classList.contains('info__item')) { 
+        if (menuInfo.classList.contains('menu__info_active')) {
+            closeElement(menuInfo, 'menu__info_active');
+        }
+    }
+
+    //закрываем модалку, если клик вокруг нее
+    if ((target.classList.contains('over') && modalWindow.name.classList.contains('visible'))) {
+        modalWindow.name.classList.remove('visible');
+        modalWindow.name.classList.add('hidden');
+        over.name.classList.remove('visible');
+        over.name.classList.add('hidden')
+        console.log('sss')
+    }
+})
+
+
+function closeElement(element, className) {
+    element.classList.remove(className);
+    console.log('close')
+}
+
+function filterData(data) {//ФУНКЦИЯ ДЛЯ СОРТИРОВКИ ДАННЫХ. НЕОБХОДИМА ДЛЯ ВЫВОДА НАПОМИНАНИЙ ПОДРЯД ПО ДАТАМ. В ПРОЦЕССЕ
+    console.log(Object.keys(data).sort((a, b) => {
+        console.log(a.match(/\d\d\d\d/) - b.match(/\d\d\d\d/))
+        return a.match(/\d\d\d\d/) - b.match(/\d\d\d\d/);
+    }));
+    
+}
+
+filterData(messages);
+
+function useTheBell() {
+
+}
+
+function checkTodayAndSound() {
+    if (messages[`${new Date().getFullYear()}-${validateDigit(new Date().getMonth() + 1)}-${validateDigit(new Date().getDate())}`]) {
+        console.log(`${new Date().getFullYear()}-${validateDigit(new Date().getMonth() + 1)}-${validateDigit(new Date().getDate())}`)
+    }
+    else {
+        console.log('Не существует')
+    }
+}
+
+checkTodayAndSound()
