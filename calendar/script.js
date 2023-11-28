@@ -54,9 +54,7 @@ function createDayBox(parent, date, empty = false, year, month, isEmpty) { //С�
 
     if (dayBox.classList.contains('calendar__day_inside')) {
         dayBox.append(insideBox);
-        // console.log(insideBox)
     }
-
 }
 
 let interval;
@@ -81,7 +79,6 @@ function createMonth(wrapper, daysInMonth, startDay, m, clearIntervalFlag) {//С
             clearInterval(interval)
         }
     }, 5)
-    // console.log(currentShowMonth, month[m], m)
 }
 
 function getFirstDayOfMonth(date) {//находим день недели первого числа заданного месяца, необходимо для формирования пустых ячеек
@@ -123,7 +120,6 @@ function changeMonth(direction, date) {//функционал по перекл�
         }
         selectDay = `${validateDigit(currentYear)}-${validateDigit(currentMonth+1, true)}-${validateDigit(currentDay)}`;
     }
-    console.log(selectDay)
 }
 
 function validateDigit(dig, isMonth = false) {//проверяем числа для обхода ошибок работы с обьектом даты и пр...
@@ -156,7 +152,6 @@ nextBtn.addEventListener('click', (e) => {//переключение на сле
 
 function setActive(checkDate, currDate) {//помечаем не пустые дни, в которых уже есть напоминание
     if(checkDate in currDate) {
-        // console.log(checkDate, currDate)
         return true
     } 
     return false
@@ -189,7 +184,7 @@ function mouseOver(element, hoveredClass, removedClass, day, toDelete) {//доб
             element.remove();
             saveRemindersToLocalStorage(messages);
         }
-        console.log(validateDigit(currentShowYear), validateDigit(currentShowMonth), validateDigit(parseInt(day)))
+        // console.log(validateDigit(currentShowYear), validateDigit(currentShowMonth), validateDigit(parseInt(day)))
     })
 }
 
@@ -209,11 +204,8 @@ monthWrapper.addEventListener('click', (e) => {//открывает поле в�
                                   <button class="input__btn">Сохранить изменения</button>
                               </div>`;
         wrapper.append(inputBox);
-        // console.log(inputBox)wwwwwwwwwwwwwwwwwww
         inputBox.querySelector('.input__btn')
                 .addEventListener('click', (eInput) => {addNewReminder(inputBox, messages, `${currentShowYear}-${currentShowMonth}-${validateDigit(e.target.textContent)}`, e);
-                //  console.log(messages);
-                //  console.log(JSON.parse(localStorage.getItem('calendarReminders')))
                    });
         if (inputBox) {
             inputBox.addEventListener('click', (e) => {//закрывает поле ввода
@@ -240,7 +232,6 @@ function addNewReminder(box, saveTo, date, e) {
 
         const insideBox = document.createElement('div');
         insideBox.classList.add('calendar__day_passive');
-        // console.log(`${validateDigit(date)}`)
         insideBox.textContent = messages[`${date}`];
     
         e.target.append(insideBox);
@@ -251,9 +242,6 @@ function addNewReminder(box, saveTo, date, e) {
         e.target.addEventListener('mouseleave', (e) =>  mouseOver(insideBox, 'calendar__day_passive', 'calendar__day_hovered', e.target.textContent));
         box.remove();
     }
-    // console.log(saveTo[date])
-
-    // mouseOver(element, hoveredClass, removedClass, day, toDelete)
 }
 
 function changeBackground(selector, currentMonth) {
@@ -291,25 +279,8 @@ const modalClose = new CreateElement('div', ['modal__close'], 'modalClose', moda
 const over = new CreateElement('div', ['over', 'hidden'], 'over', calendar);
 const modalWrapper = new CreateElement('ul', ['modal__wrapper'], 'modalWrapper', modalWindow.name);
 
-
-
-// const fullInfoStorage = JSON.parse(localStorage.getItem('calendarReminders'))
-// // console.log(fullInfoStorage);
-// const fullInfoArray = Object.keys(fullInfoStorage)
-// fullInfoArray.forEach(item => {
-//     const modalItem = new CreateElement('li', 'modal__item', 'modalItem', modalWrapper.name);
-//     console.log(fullInfoStorage[item]);
-//     modalItem.name.textContent = 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nulla nesciunt dolor aut iste sed fugit impedit quasi veniam. Id cum omnis dolores! Quaerat vitae, voluptatem temporibus itaque ipsam odio ut!';
-//     modalItem.name.textContent = `${item}:${fullInfoStorage[item]}`;
-// });
-
-
-
-
-
 modalWindow.name.addEventListener('click', (e) => {
     if (e.target.classList.contains('modal__close')) {
-        console.log(e.target);
         modalWindow.name.classList.toggle('hidden');
         modalWindow.name.classList.toggle('visible');
         if (over.name.classList.contains('visible')) {
@@ -325,16 +296,14 @@ menu.addEventListener('click', (e) => {
     }
     if (e.target.classList.contains('info__item') && e.target.classList.contains('info__item_all')) {
         const fullInfoStorage = JSON.parse(localStorage.getItem('calendarReminders'))
-        // console.log(fullInfoStorage);
-        const fullInfoArray = Object.keys(fullInfoStorage);
+        let fullInfoArray = filterData(Object.keys(fullInfoStorage));
         modalWrapper.name.innerHTML = '';
-        fullInfoArray.forEach(item => {
 
+        fullInfoArray.forEach(item => {
             const modalItem = new CreateElement('li', ['modal__item'], 'modalItem', modalWrapper.name);
             modalItem.name.textContent = `${item}:${fullInfoStorage[item]}`;
-            console.log(fullInfoStorage[item]);
-
         });
+
         over.name.classList.remove('hidden');
         over.name.classList.add('visible');
         modalWindow.name.classList.remove('hidden');
@@ -356,36 +325,44 @@ calendar.addEventListener('click', (e) => {
         modalWindow.name.classList.add('hidden');
         over.name.classList.remove('visible');
         over.name.classList.add('hidden')
-        console.log('sss')
     }
 })
 
 
 function closeElement(element, className) {
     element.classList.remove(className);
-    console.log('close')
 }
 
-function filterData(data) {//ФУНКЦИЯ ДЛЯ СОРТИРОВКИ ДАННЫХ. НЕОБХОДИМА ДЛЯ ВЫВОДА НАПОМИНАНИЙ ПОДРЯД ПО ДАТАМ. В ПРОЦЕССЕ
-    console.log(Object.keys(data).sort((a, b) => {
-        console.log(a.match(/\d\d\d\d/) - b.match(/\d\d\d\d/))
-        return a.match(/\d\d\d\d/) - b.match(/\d\d\d\d/);
-    }));
-    
+function filterData(data) {//ФУНКЦИЯ ДЛЯ СОРТИРОВКИ ДАННЫХ. НЕОБХОДИМА ДЛЯ ВЫВОДА НАПОМИНАНИЙ ПОДРЯД ПО ДАТАМ.
+    function compare(a, b) {
+        let dateA = new Date(a);
+        let dateB = new Date(b);
+        return dateA - dateB;
+    }
+    let sortedArray = data.sort(compare);
+    return sortedArray;
 }
 
-filterData(messages);
+// filterData(messages);
 
-function useTheBell() {
+// function useTheBell() {
 
-}
+// }
+
+// function setCheckInterval() {
+//     if ()
+//     let interval = setInterval(() => {
+        
+//     }, );
+// }
 
 function checkTodayAndSound() {
     if (messages[`${new Date().getFullYear()}-${validateDigit(new Date().getMonth() + 1)}-${validateDigit(new Date().getDate())}`]) {
-        console.log(`${new Date().getFullYear()}-${validateDigit(new Date().getMonth() + 1)}-${validateDigit(new Date().getDate())}`)
+        // console.log(`${new Date().getFullYear()}-${validateDigit(new Date().getMonth() + 1)}-${validateDigit(new Date().getDate())}`);
+        console.log('Есть напоминание')
     }
     else {
-        console.log('Не существует')
+        console.log('Сегодня нет напоминаний');
     }
 }
 
